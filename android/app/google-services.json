@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "264849069591",
+    "project_id": "chat-app-93655",
+    "storage_bucket": "chat-app-93655.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264849069591:android:549134c6ac2e8073a6ae52",
+        "android_client_info": {
+          "package_name": "com.kduy.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264849069591-r6kuogurhju6vhd4mv540c6m1it4u32c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kduy.chatapp",
+            "certificate_hash": "77608033bcd844cfce758d2c0a28c84e09107cac"
+          }
+        },
+        {
+          "client_id": "264849069591-e7rae03lp3djouqon62r5jht2rrivqri.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMz3fvbEBO7wpMC8Ua9UoYC1deF9TUrkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264849069591-e7rae03lp3djouqon62r5jht2rrivqri.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
