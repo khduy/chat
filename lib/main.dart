@@ -35,7 +35,7 @@ class MyApp extends ConsumerWidget {
         blendLevel: 18,
         appBarStyle: FlexAppBarStyle.primary,
         appBarOpacity: 0.95,
-        appBarElevation: 12,
+        appBarElevation: 8,
         transparentStatusBar: false,
         tabBarStyle: FlexTabBarStyle.forAppBar,
         tooltipsMatchBackground: true,
