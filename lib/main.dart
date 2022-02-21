@@ -1,11 +1,13 @@
-import 'package:chat/src/view/base_widgets/auth_widget.dart';
-import 'package:chat/src/view/home/home_page.dart';
-import 'package:chat/src/view/sign_in/sign_in_page.dart';
+import 'general_provider.dart';
+import 'view/home/home_page.dart';
+
+import 'view/sign_in/sign_in_page.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 
 
-import 'src/provider/general_provider.dart';
+import 'common_widgets/auth_widget.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +33,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: FlexThemeData.light(
         scheme: FlexScheme.brandBlue,
-        surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
+        surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
         blendLevel: 18,
         appBarStyle: FlexAppBarStyle.primary,
         appBarOpacity: 0.95,
@@ -59,7 +61,7 @@ class MyApp extends ConsumerWidget {
         useSubThemes: false,
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       home: AuthWidget(
         nonSignedInBuilder: (context) => SignInPage(),
         signedInBuilder: (context) => HomePage(),

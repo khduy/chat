@@ -1,8 +1,9 @@
-import 'package:chat/src/provider/general_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../general_provider.dart';
 
 final signInControllerProvider = ChangeNotifierProvider<SignInController>(
   (ref) => SignInController(firebaseAuth: ref.watch(firebaseAuthProvider)),

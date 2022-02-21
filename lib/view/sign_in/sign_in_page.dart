@@ -1,5 +1,4 @@
-
-import 'package:chat/src/view/base_widgets/loading_overlay_widget.dart';
+import 'package:chat/common_widgets/loading_overlay_widget.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'sign_in_controller.dart';
