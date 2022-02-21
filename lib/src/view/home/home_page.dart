@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../provider/general_provider.dart';
@@ -19,8 +20,8 @@ class HomePage extends ConsumerWidget {
         leading: Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
           child: CircleAvatar(
-            child: Image.network(
-              firebaseAuth.currentUser?.photoURL ??
+            backgroundImage: CachedNetworkImageProvider(
+              firebaseAuth.currentUser!.photoURL ??
                   'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg',
             ),
           ),

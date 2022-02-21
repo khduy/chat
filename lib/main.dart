@@ -1,9 +1,9 @@
+import 'package:chat/src/view/base_widgets/auth_widget.dart';
+import 'package:chat/src/view/home/home_page.dart';
+import 'package:chat/src/view/sign_in/sign_in_page.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
-import 'src/ui/home/home_page.dart';
-import 'src/ui/sign_in/sign_in_page.dart';
 
-import 'src/ui/base_widgets/auth_widget.dart';
 
 import 'src/provider/general_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,10 +40,26 @@ class MyApp extends ConsumerWidget {
         tabBarStyle: FlexTabBarStyle.forAppBar,
         tooltipsMatchBackground: true,
         swapColors: false,
-        lightIsWhite: false,
+        lightIsWhite: true,
         useSubThemes: false,
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
       ),
+      darkTheme: FlexThemeData.dark(
+        scheme: FlexScheme.brandBlue,
+        surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
+        blendLevel: 18,
+        appBarStyle: FlexAppBarStyle.surface,
+        appBarOpacity: 0.95,
+        appBarElevation: 0,
+        transparentStatusBar: true,
+        tabBarStyle: FlexTabBarStyle.forAppBar,
+        tooltipsMatchBackground: true,
+        swapColors: false,
+        darkIsTrueBlack: false,
+        useSubThemes: false,
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+      ),
+      themeMode: ThemeMode.dark,
       home: AuthWidget(
         nonSignedInBuilder: (context) => SignInPage(),
         signedInBuilder: (context) => HomePage(),

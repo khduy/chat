@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final signInViewModelProvider = ChangeNotifierProvider<SignInViewModel>(
-  (ref) => SignInViewModel(firebaseAuth: ref.watch(firebaseAuthProvider)),
+final signInControllerProvider = ChangeNotifierProvider<SignInController>(
+  (ref) => SignInController(firebaseAuth: ref.watch(firebaseAuthProvider)),
 );
 
-class SignInViewModel with ChangeNotifier {
-  SignInViewModel({required this.firebaseAuth});
+class SignInController with ChangeNotifier {
+  SignInController({required this.firebaseAuth});
 
   final FirebaseAuth firebaseAuth;
   bool isLoading = false;
