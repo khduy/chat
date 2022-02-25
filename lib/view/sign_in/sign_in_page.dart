@@ -1,25 +1,13 @@
-import 'package:chat/common_widgets/loading_overlay_widget.dart';
 import 'package:flutter/cupertino.dart';
-
-import 'sign_in_controller.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../common_widgets/alert_dialog/exception_alert_dialog.dart';
+import '../../common_widgets/loading_overlay_widget.dart';
+import 'sign_in_controller.dart';
 
 class SignInPage extends ConsumerWidget {
   const SignInPage({Key? key}) : super(key: key);
-
-  String _message(dynamic exception) {
-    if (exception is FirebaseException) {
-      return exception.message ?? exception.toString();
-    }
-    if (exception is PlatformException) {
-      return exception.message ?? exception.toString();
-    }
-    return exception.toString();
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,26 +16,15 @@ class SignInPage extends ConsumerWidget {
       signInControllerProvider,
       (_, model) async {
         if (model.error != null) {
-          await showDialog(
+          await showExceptionAlertDialog(
             context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Failed"),
-                content: Text(_message(model.error)),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('OK'),
-                  )
-                ],
-              );
-            },
+            title: 'Failed',
+            exception: model.error,
           );
         }
       },
     );
+    final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -58,6 +35,7 @@ class SignInPage extends ConsumerWidget {
                 children: [
                   Image.asset(
                     'assets/logo.png',
+                    color: theme.brightness == Brightness.dark ? Colors.white : null,
                     height: 150,
                   ),
                   const SizedBox(height: 10),
@@ -76,7 +54,7 @@ class SignInPage extends ConsumerWidget {
                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                     ),
                     onPressed: () async {
-                      await signInController.signInWithGoogle();
+                      await signInController.onSignIn();
                     },
                   ),
                 ],

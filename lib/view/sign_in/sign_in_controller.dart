@@ -1,3 +1,5 @@
+import 'package:chat/model/user_model.dart';
+import 'package:chat/service/firestore_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,14 +15,18 @@ class SignInController with ChangeNotifier {
   SignInController({required this.firebaseAuth});
 
   final FirebaseAuth firebaseAuth;
+  final _fireStoreDatabase = FireStoreDatabase();
+
   bool isLoading = false;
   dynamic error;
 
-  Future<void> signInWithGoogle() async {
+  Future<void> _signInWithGoogle() async {
     try {
       error = null;
       isLoading = true;
       notifyListeners();
+      // fix auto pick old account to login in Android
+      await GoogleSignIn().signOut();
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -42,6 +48,23 @@ class SignInController with ChangeNotifier {
     } finally {
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<bool> _isCurrentUserExist() async {
+    return await _fireStoreDatabase.isUserExist(firebaseAuth.currentUser!.uid);
+  }
+
+  Future<void> _saveCurrentUserToDB() async {
+    final user = UserModel.fromFirebaseUser(firebaseAuth.currentUser!);
+    _fireStoreDatabase.setUserToDB(user);
+  }
+
+  Future<void> onSignIn() async {
+    await _signInWithGoogle();
+
+    if (!await _isCurrentUserExist()) {
+      _saveCurrentUserToDB();
     }
   }
 }

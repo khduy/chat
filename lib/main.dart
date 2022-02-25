@@ -1,10 +1,10 @@
-import 'general_provider.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+
+import 'constants/theme.dart';
+
 import 'view/home/home_page.dart';
 
 import 'view/sign_in/sign_in_page.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
-
-
 
 import 'common_widgets/auth_widget.dart';
 
@@ -26,45 +26,15 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final firebaseAuth = ref.watch(firebaseAuthProvider);
-
     return MaterialApp(
       title: 'Chat App',
       debugShowCheckedModeBanner: false,
-      theme: FlexThemeData.light(
-        scheme: FlexScheme.brandBlue,
-        surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
-        blendLevel: 18,
-        appBarStyle: FlexAppBarStyle.primary,
-        appBarOpacity: 0.95,
-        appBarElevation: 8,
-        transparentStatusBar: false,
-        tabBarStyle: FlexTabBarStyle.forAppBar,
-        tooltipsMatchBackground: true,
-        swapColors: false,
-        lightIsWhite: true,
-        useSubThemes: false,
-        visualDensity: FlexColorScheme.comfortablePlatformDensity,
-      ),
-      darkTheme: FlexThemeData.dark(
-        scheme: FlexScheme.brandBlue,
-        surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,
-        blendLevel: 18,
-        appBarStyle: FlexAppBarStyle.surface,
-        appBarOpacity: 0.95,
-        appBarElevation: 0,
-        transparentStatusBar: true,
-        tabBarStyle: FlexTabBarStyle.forAppBar,
-        tooltipsMatchBackground: true,
-        swapColors: false,
-        darkIsTrueBlack: false,
-        useSubThemes: false,
-        visualDensity: FlexColorScheme.comfortablePlatformDensity,
-      ),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       themeMode: ThemeMode.light,
       home: AuthWidget(
-        nonSignedInBuilder: (context) => SignInPage(),
-        signedInBuilder: (context) => HomePage(),
+        nonSignedInBuilder: (context) => const SignInPage(),
+        signedInBuilder: (context) => const HomePage(),
       ),
     );
   }

@@ -1,4 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat/common_widgets/avatar.dart';
+import 'package:chat/view/search/search_page.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../general_provider.dart';
@@ -19,22 +20,59 @@ class HomePage extends ConsumerWidget {
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
-          child: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(
-              firebaseAuth.currentUser!.photoURL ??
-                  'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg',
-            ),
+          child: Avatar(
+            photoURL: firebaseAuth.currentUser?.photoURL,
           ),
         ),
         actions: [
           CupertinoButton(
-            child: const Icon(
+            child: Icon(
               Icons.logout,
-              color: Colors.white,
+              color: theme.colorScheme.onPrimary,
             ),
             onPressed: () async {
               await firebaseAuth.signOut();
             },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: InkWell(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: theme.brightness == Brightness.light ? Colors.black12 : Colors.white12,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.search,
+                      color: theme.hintColor,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Search',
+                      style: theme.textTheme.bodyText1!.copyWith(
+                        color: theme.hintColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              borderRadius: BorderRadius.circular(8),
+              splashColor: Colors.transparent,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SearchPage()),
+                );
+              },
+            ),
           ),
         ],
       ),
