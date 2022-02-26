@@ -1,4 +1,6 @@
 import 'package:chat/common_widgets/avatar.dart';
+import 'package:chat/model/chanel_model.dart';
+import 'package:chat/service/firestore_database.dart';
 import 'package:chat/view/search/search_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +9,11 @@ import '../../general_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final channelStreamProvider =
+    StreamProvider.autoDispose.family<List<Channel>, String>((ref, userId) {
+  return FireStoreDatabase().channelStream(userId);
+});
 
 class HomePage extends ConsumerWidget {
   const HomePage({Key? key}) : super(key: key);

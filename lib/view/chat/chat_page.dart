@@ -64,30 +64,33 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
           children: [
             Expanded(
-              child: Consumer(
-                builder: (context, ref, _) {
-                  final _channelId = channelId(_currentUserId, widget.oppositeUser.id);
-                  final messages = ref.watch(messageStreamProvider(_channelId)).value;
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: ListView.separated(
-                      physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                      reverse: true,
-                      itemCount: messages?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        bool isMine = _currentUserId == messages?[index].senderId;
+              child: GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    final _channelId = channelId(_currentUserId, widget.oppositeUser.id);
+                    final messages = ref.watch(messageStreamProvider(_channelId)).value;
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: ListView.separated(
+                        physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                        reverse: true,
+                        itemCount: messages?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          bool isMine = _currentUserId == messages?[index].senderId;
 
-                        return MessageItem(
-                          isMine: isMine,
-                          message: messages![index].textMessage,
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(height: 3);
-                      },
-                    ),
-                  );
-                },
+                          return MessageItem(
+                            isMine: isMine,
+                            message: messages![index].textMessage,
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(height: 3);
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             ChatFooter(
@@ -101,6 +104,9 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void onSendMessage() {
+    if (_messageController.text.trim().isEmpty) {
+      return;
+    }
     if (_channel == null) {
       var userId1 = FirebaseAuth.instance.currentUser!.uid;
       var userId2 = widget.oppositeUser.id;
@@ -126,6 +132,16 @@ class _ChatPageState extends State<ChatPage> {
       channelId: _channel!.id,
     );
     FireStoreDatabase().addMessage(message);
+
+    var channelUpdateData = {
+      'lastMessage': message.textMessage,
+      'lastTime': message.sendAt,
+      'unRead': {
+        _currentUserId: false,
+        widget.oppositeUser.id: true,
+      },
+    };
+    FireStoreDatabase().updateChannel(_channel!.id, channelUpdateData);
 
     _messageController.clear();
   }

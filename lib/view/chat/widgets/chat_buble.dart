@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class MessageItem extends StatelessWidget {
   const MessageItem({Key? key, required this.isMine, required this.message}) : super(key: key);
   final bool isMine;
@@ -16,7 +15,7 @@ class MessageItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: isMine ? Theme.of(context).primaryColor : Colors.black12,
+            color: isMine ? Theme.of(context).primaryColor : Colors.grey[300],
           ),
           child: Text(
             message,
