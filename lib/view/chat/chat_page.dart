@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:chat/common_widgets/avatar.dart';
-import 'package:chat/model/chanel_model.dart';
+import 'package:chat/model/channel_model.dart';
 import 'package:chat/model/message_model.dart';
 import 'package:chat/model/user_model.dart';
 import 'package:chat/service/firestore_database.dart';
@@ -42,7 +42,6 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 30,
         leading: CupertinoButton(
           child: const Icon(
             Icons.arrow_back_ios,
@@ -112,6 +111,7 @@ class _ChatPageState extends State<ChatPage> {
         memberIds: [_currentUser.id, widget.oppositeUser.id],
         members: [_currentUser, widget.oppositeUser],
         lastMessage: _messageController.text,
+        sendBy: _currentUser.id,
         lastTime: Timestamp.now(),
         unRead: {
           _currentUser.id: false,
@@ -134,6 +134,7 @@ class _ChatPageState extends State<ChatPage> {
 
     var channelUpdateData = {
       'lastMessage': message.textMessage,
+      'sendBy': _currentUser.id,
       'lastTime': message.sendAt,
       'unRead': {
         _currentUser.id: false,

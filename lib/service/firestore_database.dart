@@ -1,8 +1,7 @@
-import 'package:chat/model/chanel_model.dart';
+import 'package:chat/model/channel_model.dart';
 import 'package:chat/model/message_model.dart';
 import 'package:chat/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 String channelId(String id1, String id2) {
   if (id1.hashCode < id2.hashCode) {
@@ -83,7 +82,6 @@ class FireStoreDatabase {
       for (var element in querySnapshot.docs) {
         rs.add(Channel.fromDocumentSnapshot(element));
       }
-      print(rs.length);
       return rs;
     });
   }

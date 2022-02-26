@@ -8,6 +8,7 @@ class Channel {
   final Timestamp lastTime;
   final Map<String, bool> unRead;
   final List<UserModel> members;
+  final String sendBy;
 
   Channel({
     required this.id,
@@ -16,6 +17,7 @@ class Channel {
     required this.lastMessage,
     required this.lastTime,
     required this.unRead,
+    required this.sendBy,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class Channel {
       'memberIds': memberIds,
       'members': members.map((user) => user.toMap()..['id'] = user.id).toList(),
       'lastMessage': lastMessage,
+      'sendBy':sendBy,
       'lastTime': lastTime,
       'unRead': unRead,
     };
@@ -34,6 +37,7 @@ class Channel {
       memberIds: List<String>.from(map['memberIds']),
       members: List<UserModel>.from(map['members']?.map((user) => UserModel.fromMap(user))),
       lastMessage: map['lastMessage'] ?? '',
+      sendBy: map['sendBy'],
       lastTime: map['lastTime'] as Timestamp,
       unRead: map['unRead'],
     );
@@ -44,6 +48,7 @@ class Channel {
       memberIds: List<String>.from(snapshot['memberIds']),
       members: List<UserModel>.from(snapshot['members']?.map((user) => UserModel.fromMap(user))),
       lastMessage: snapshot['lastMessage'] ?? '',
+      sendBy: snapshot['sendBy'],
       lastTime: snapshot['lastTime'] as Timestamp,
       unRead: Map<String, bool>.from(snapshot['unRead']),
     );

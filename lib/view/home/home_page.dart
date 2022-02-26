@@ -1,10 +1,10 @@
 import 'package:chat/common_widgets/avatar.dart';
-import 'package:chat/model/chanel_model.dart';
+import 'package:chat/model/channel_model.dart';
 import 'package:chat/service/firestore_database.dart';
+import 'package:chat/view/home/widgets/channels_listview.dart';
+import 'package:chat/view/home/widgets/empty_chats.dart';
 import 'package:chat/view/search/search_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 
 import '../../general_provider.dart';
 
@@ -16,13 +16,11 @@ final channelStreamProvider =
   return FireStoreDatabase().channelStream(userId);
 });
 
-class HomePage extends ConsumerWidget {
+class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final firebaseAuth = ref.watch(firebaseAuthProvider);
-    final channels = ref.watch(channelStreamProvider(firebaseAuth.currentUser!.uid));
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -30,18 +28,28 @@ class HomePage extends ConsumerWidget {
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
-          child: Avatar(
-            photoURL: firebaseAuth.currentUser?.photoURL,
+          child: Consumer(
+            builder: (context, ref, child) {
+              final firebaseAuth = ref.watch(firebaseAuthProvider);
+              return Avatar(
+                photoURL: firebaseAuth.currentUser?.photoURL,
+              );
+            },
           ),
         ),
         actions: [
-          CupertinoButton(
-            child: Icon(
-              Icons.logout,
-              color: theme.colorScheme.onPrimary,
-            ),
-            onPressed: () async {
-              await firebaseAuth.signOut();
+          Consumer(
+            builder: (context, ref, child) {
+              final firebaseAuth = ref.watch(firebaseAuthProvider);
+              return CupertinoButton(
+                child: Icon(
+                  Icons.logout,
+                  color: theme.colorScheme.onPrimary,
+                ),
+                onPressed: () async {
+                  await firebaseAuth.signOut();
+                },
+              );
             },
           ),
         ],
@@ -96,42 +104,31 @@ class HomePage extends ConsumerWidget {
               },
             ),
           ),
-          Expanded(
-            child: channels.maybeWhen(
-              data: (channels) {
-                if (channels.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'No Channels',
-                      style: theme.textTheme.bodyText1!.copyWith(
-                        color: theme.hintColor,
-                      ),
-                    ),
-                  );
-                }
-                return ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                  itemCount: channels.length,
-                  itemBuilder: (context, index) {
-                    final channel = channels[index];
-                    var opositeUser = channel.members
-                        .firstWhere((user) => user.id != firebaseAuth.currentUser!.uid);
-                    return ListTile(
-                      leading: Avatar(
-                        photoURL: opositeUser.photoUrl,
-                      ),
-                      title: Text(opositeUser.displayName),
-                      subtitle: Text(channel.lastMessage),
-                      onTap: () {},
+          Consumer(
+            builder: (context, ref, child) {
+              final firebaseAuth = ref.watch(firebaseAuthProvider);
+              final channels = ref.watch(channelStreamProvider(firebaseAuth.currentUser!.uid));
+              return Expanded(
+                child: channels.maybeWhen(
+                  data: (channels) {
+                    if (channels.isEmpty) {
+                      return child!;
+                    }
+                    return ChannelsListView(
+                      firebaseAuth: firebaseAuth,
+                      channels: channels,
                     );
                   },
-                );
-              },
-              orElse: () => const SizedBox(),
-            ),
-          ),
+                  orElse: () => const SizedBox(),
+                ),
+              );
+            },
+            child: const EmptyChat(),
+          )
         ],
       ),
     );
   }
 }
+
+

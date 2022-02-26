@@ -20,7 +20,6 @@ class SearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final users = ref.watch(userStreamProvider);
-    final theme = Theme.of(context);
 
     return Scaffold(
       body: SafeArea(
