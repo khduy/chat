@@ -1,10 +1,9 @@
 import 'package:chat/common_widgets/avatar.dart';
-import 'package:chat/general_provider.dart';
 import 'package:chat/model/user_model.dart';
 import 'package:chat/service/firestore_database.dart';
 import 'package:chat/view/chat/chat_page.dart';
+import 'package:chat/view/search/widgets/search_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,58 +21,41 @@ class SearchPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final users = ref.watch(userStreamProvider);
     final theme = Theme.of(context);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      autofocus: true,
-                      onChanged: (value) => ref.read(searchInputProvider.notifier).state = value,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: const EdgeInsets.all(8.0),
-                        fillColor:
-                            theme.brightness == Brightness.light ? Colors.black12 : Colors.white12,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: const BorderSide(
-                            width: 0,
-                            style: BorderStyle.none,
-                          ),
-                        ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Icon(
-                            Icons.search,
-                            color: theme.hintColor,
-                          ),
-                        ),
-                        prefixIconConstraints: const BoxConstraints(maxHeight: 50, maxWidth: 50),
-                        hintText: 'Enter user name',
-                      ),
-                    ),
+              child: Hero(
+                tag: 'searchBar',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: SearchBar(
+                    onChanged: (value) => ref.read(searchInputProvider.notifier).state = value,
+                    onCancle: () => Navigator.pop(context),
                   ),
-                  CupertinoButton(
-                    child: const Text('Cancle'),
-                    onPressed: () => Navigator.pop(context),
-                    padding: const EdgeInsets.all(8),
-                  ),
-                ],
+                ),
               ),
             ),
             Expanded(
               child: users.when(
-                loading: () => const Center(child: Text('Loading...')),
+                loading: () => Column(
+                  children: const [
+                    SizedBox(height: 20),
+                    Text('Searching...'),
+                  ],
+                ),
                 error: (error, stack) => const Text('Oops, something unexpected happened'),
                 data: (value) {
                   if (value.isEmpty) {
-                    return const Center(child: Text('No results'));
+                    return Column(
+                      children: const [
+                        SizedBox(height: 20),
+                        Text('No results'),
+                      ],
+                    );
                   }
                   return ListView.builder(
                     itemCount: value.length,

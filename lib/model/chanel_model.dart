@@ -39,7 +39,7 @@ class Channel {
       memberIds: List<String>.from(snapshot['memberIds']),
       lastMessage: snapshot['lastMessage'] ?? '',
       lastTime: snapshot['lastTime'] as Timestamp,
-      unRead: snapshot['unRead'],
+      unRead: Map<String, bool>.from(snapshot['unRead']),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:chat/common_widgets/avatar.dart';
 import 'package:chat/view/search/search_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 import '../../general_provider.dart';
 
@@ -41,35 +42,53 @@ class HomePage extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(8),
             child: InkWell(
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: theme.brightness == Brightness.light ? Colors.black12 : Colors.white12,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.search,
-                      color: theme.hintColor,
-                      size: 18,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Search',
-                      style: theme.textTheme.bodyText1!.copyWith(
+              child: Hero(
+                tag: 'searchBar',
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: theme.brightness == Brightness.light ? Colors.black12 : Colors.white12,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.search,
                         color: theme.hintColor,
+                        size: 18,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Text(
+                        'Search',
+                        style: theme.textTheme.bodyText1!.copyWith(
+                          color: theme.hintColor,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               borderRadius: BorderRadius.circular(8),
               splashColor: Colors.transparent,
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SearchPage()),
+                  PageRouteBuilder(
+                    pageBuilder: (c, a1, a2) => const SearchPage(),
+                    transitionsBuilder: (c, a1, a2, child) {
+                      // const begin = Offset(0.0, 0.1);
+                      // const end = Offset.zero;
+                      // const curve = Curves.ease;
+
+                      // var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+                      return FadeTransition(
+                        opacity: a1,
+                        child: child,
+                      );
+                    },
+                    transitionDuration: const Duration(milliseconds: 200),
+                  ),
                 );
               },
             ),

@@ -1,4 +1,5 @@
 import 'package:chat/model/chanel_model.dart';
+import 'package:chat/model/message_model.dart';
 import 'package:chat/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -22,7 +23,7 @@ class FireStoreDatabase {
   Stream<List<UserModel>> findUser(String username) {
     return FirebaseFirestore.instance
         .collection('users')
-        .where('userName', isEqualTo: username)
+        .where('userName', isGreaterThanOrEqualTo: username)
         .snapshots()
         .map((snapShot) {
       List<UserModel> rs = [];
@@ -41,6 +42,32 @@ class FireStoreDatabase {
         return Channel.fromDocumentSnapshot(chanel);
       }
       return null;
+    });
+  }
+
+  Future<void> updateChannel(String channelId, Map<String, dynamic> data) async {
+    await FirebaseFirestore.instance
+        .collection('channels')
+        .doc(channelId)
+        .set(data, SetOptions(merge: true));
+  }
+
+  Future<void> addMessage(Message message) async {
+    await FirebaseFirestore.instance.collection('messages').add(message.toMap());
+  }
+
+  Stream<List<Message>> messageStream(String channelId) {
+    return FirebaseFirestore.instance
+        .collection('messages')
+        .where('channelId', isEqualTo: channelId)
+        .orderBy('sendAt', descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      List<Message> rs = [];
+      for (var element in querySnapshot.docs) {
+        rs.add(Message.fromDocumentSnapshot(element));
+      }
+      return rs;
     });
   }
 }

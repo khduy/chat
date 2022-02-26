@@ -35,4 +35,14 @@ class Message {
     );
   }
 
+  factory Message.fromDocumentSnapshot(DocumentSnapshot snapshot) {
+    return Message(
+      id: snapshot.id,
+      textMessage: snapshot['textMessage'] ?? '',
+      senderId: snapshot['senderId'] ?? '',
+      sendAt: snapshot['sendAt'],
+      channelId: snapshot['channelId'] ?? '',
+    );
+  }
+
 }
