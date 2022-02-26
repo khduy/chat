@@ -2,6 +2,7 @@ import 'package:chat/common_widgets/avatar.dart';
 import 'package:chat/model/chanel_model.dart';
 import 'package:chat/service/firestore_database.dart';
 import 'package:chat/view/search/search_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
@@ -21,6 +22,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firebaseAuth = ref.watch(firebaseAuthProvider);
+    final channels = ref.watch(channelStreamProvider(firebaseAuth.currentUser!.uid));
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -83,12 +85,6 @@ class HomePage extends ConsumerWidget {
                   PageRouteBuilder(
                     pageBuilder: (c, a1, a2) => const SearchPage(),
                     transitionsBuilder: (c, a1, a2, child) {
-                      // const begin = Offset(0.0, 0.1);
-                      // const end = Offset.zero;
-                      // const curve = Curves.ease;
-
-                      // var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
                       return FadeTransition(
                         opacity: a1,
                         child: child,
@@ -98,6 +94,40 @@ class HomePage extends ConsumerWidget {
                   ),
                 );
               },
+            ),
+          ),
+          Expanded(
+            child: channels.maybeWhen(
+              data: (channels) {
+                if (channels.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No Channels',
+                      style: theme.textTheme.bodyText1!.copyWith(
+                        color: theme.hintColor,
+                      ),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                  itemCount: channels.length,
+                  itemBuilder: (context, index) {
+                    final channel = channels[index];
+                    var opositeUser = channel.members
+                        .firstWhere((user) => user.id != firebaseAuth.currentUser!.uid);
+                    return ListTile(
+                      leading: Avatar(
+                        photoURL: opositeUser.photoUrl,
+                      ),
+                      title: Text(opositeUser.displayName),
+                      subtitle: Text(channel.lastMessage),
+                      onTap: () {},
+                    );
+                  },
+                );
+              },
+              orElse: () => const SizedBox(),
             ),
           ),
         ],

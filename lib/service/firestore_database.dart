@@ -75,14 +75,15 @@ class FireStoreDatabase {
   Stream<List<Channel>> channelStream(String userId) {
     return FirebaseFirestore.instance
         .collection('channels')
-        .where('members', arrayContains: userId)
-        .orderBy('lastMessageAt', descending: true)
+        .where('memberIds', arrayContains: userId)
+        .orderBy('lastTime', descending: true)
         .snapshots()
         .map((querySnapshot) {
       List<Channel> rs = [];
       for (var element in querySnapshot.docs) {
         rs.add(Channel.fromDocumentSnapshot(element));
       }
+      print(rs.length);
       return rs;
     });
   }

@@ -33,7 +33,7 @@ class SearchPage extends ConsumerWidget {
                 child: Material(
                   type: MaterialType.transparency,
                   child: SearchBar(
-                    onChanged: (value) => ref.read(searchInputProvider.notifier).state = value,
+                    onChanged: (value) => ref.watch(searchInputProvider.notifier).state = value,
                     onCancle: () => Navigator.pop(context),
                   ),
                 ),

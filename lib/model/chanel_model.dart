@@ -1,3 +1,4 @@
+import 'package:chat/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Channel {
@@ -6,10 +7,12 @@ class Channel {
   final String lastMessage;
   final Timestamp lastTime;
   final Map<String, bool> unRead;
+  final List<UserModel> members;
 
   Channel({
     required this.id,
     required this.memberIds,
+    required this.members,
     required this.lastMessage,
     required this.lastTime,
     required this.unRead,
@@ -18,6 +21,7 @@ class Channel {
   Map<String, dynamic> toMap() {
     return {
       'memberIds': memberIds,
+      'members': members.map((user) => user.toMap()..['id'] = user.id).toList(),
       'lastMessage': lastMessage,
       'lastTime': lastTime,
       'unRead': unRead,
@@ -28,6 +32,7 @@ class Channel {
     return Channel(
       id: map['id'] ?? '',
       memberIds: List<String>.from(map['memberIds']),
+      members: List<UserModel>.from(map['members']?.map((user) => UserModel.fromMap(user))),
       lastMessage: map['lastMessage'] ?? '',
       lastTime: map['lastTime'] as Timestamp,
       unRead: map['unRead'],
@@ -37,6 +42,7 @@ class Channel {
     return Channel(
       id: snapshot.id,
       memberIds: List<String>.from(snapshot['memberIds']),
+      members: List<UserModel>.from(snapshot['members']?.map((user) => UserModel.fromMap(user))),
       lastMessage: snapshot['lastMessage'] ?? '',
       lastTime: snapshot['lastTime'] as Timestamp,
       unRead: Map<String, bool>.from(snapshot['unRead']),

@@ -30,14 +30,12 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   Channel? _channel;
   final _messageController = TextEditingController();
-  final _currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  final _currentUser = UserModel.fromFirebaseUser(FirebaseAuth.instance.currentUser!);
 
-  // late final String _channelId;
   @override
   void initState() {
     super.initState();
     _channel = widget.channel;
-    // _channelId = channelId(FirebaseAuth.instance.currentUser!.uid, widget.oppositeUser.id);
   }
 
   @override
@@ -68,7 +66,7 @@ class _ChatPageState extends State<ChatPage> {
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: Consumer(
                   builder: (context, ref, _) {
-                    final _channelId = channelId(_currentUserId, widget.oppositeUser.id);
+                    final _channelId = channelId(_currentUser.id, widget.oppositeUser.id);
                     final messages = ref.watch(messageStreamProvider(_channelId)).value;
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -77,7 +75,7 @@ class _ChatPageState extends State<ChatPage> {
                         reverse: true,
                         itemCount: messages?.length ?? 0,
                         itemBuilder: (context, index) {
-                          bool isMine = _currentUserId == messages?[index].senderId;
+                          bool isMine = _currentUser.id == messages?[index].senderId;
 
                           return MessageItem(
                             isMine: isMine,
@@ -107,27 +105,28 @@ class _ChatPageState extends State<ChatPage> {
     if (_messageController.text.trim().isEmpty) {
       return;
     }
+    // channel not created yet
     if (_channel == null) {
-      var userId1 = FirebaseAuth.instance.currentUser!.uid;
-      var userId2 = widget.oppositeUser.id;
       _channel = Channel(
-        id: channelId(userId1, userId2),
-        memberIds: [userId1, userId2],
+        id: channelId(_currentUser.id, widget.oppositeUser.id),
+        memberIds: [_currentUser.id, widget.oppositeUser.id],
+        members: [_currentUser, widget.oppositeUser],
         lastMessage: _messageController.text,
         lastTime: Timestamp.now(),
         unRead: {
-          userId1: false,
-          userId2: true,
+          _currentUser.id: false,
+          widget.oppositeUser.id: true,
         },
       );
 
       FireStoreDatabase().updateChannel(_channel!.id, _channel!.toMap());
     }
+
     var docRef = FirebaseFirestore.instance.collection('messages').doc();
     var message = Message(
       id: docRef.id,
       textMessage: _messageController.text,
-      senderId: FirebaseAuth.instance.currentUser!.uid,
+      senderId: _currentUser.id,
       sendAt: Timestamp.now(),
       channelId: _channel!.id,
     );
@@ -137,7 +136,7 @@ class _ChatPageState extends State<ChatPage> {
       'lastMessage': message.textMessage,
       'lastTime': message.sendAt,
       'unRead': {
-        _currentUserId: false,
+        _currentUser.id: false,
         widget.oppositeUser.id: true,
       },
     };
