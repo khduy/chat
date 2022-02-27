@@ -1,4 +1,3 @@
-
 import 'constants/theme.dart';
 
 import 'view/home/home_page.dart';
@@ -30,7 +29,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       home: AuthWidget(
         nonSignedInBuilder: (context) => const SignInPage(),
         signedInBuilder: (context) => const HomePage(),

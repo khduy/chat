@@ -23,7 +23,7 @@ class FireStoreDatabase {
   Stream<List<UserModel>> findUser(String username) {
     return FirebaseFirestore.instance
         .collection('users')
-        .where('userName', isGreaterThanOrEqualTo: username)
+        .where('userName', isEqualTo: username)
         .snapshots()
         .map((snapShot) {
       List<UserModel> rs = [];

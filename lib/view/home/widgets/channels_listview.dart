@@ -23,13 +23,20 @@ class ChannelsListView extends StatelessWidget {
         final channel = channels[index];
         var oppositeUser =
             channel.members.firstWhere((user) => user.id != firebaseAuth.currentUser!.uid);
+        var currentUser =
+            channel.members.firstWhere((user) => user.id == firebaseAuth.currentUser!.uid);
+        final bool isUnread = channel.unRead[currentUser.id]!;
         return ListTile(
           leading: Avatar(
             photoURL: oppositeUser.photoUrl,
           ),
-          title: Text(oppositeUser.displayName),
+          title: Text(
+            oppositeUser.displayName,
+            style: isUnread ? const TextStyle(fontWeight: FontWeight.bold) : null,
+          ),
           subtitle: Text(
             (channel.sendBy == oppositeUser.id ? '' : 'You: ') + channel.lastMessage,
+            style: isUnread ? const TextStyle(fontWeight: FontWeight.bold) : null,
           ),
           onTap: () {
             Navigator.push(

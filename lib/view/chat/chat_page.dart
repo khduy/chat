@@ -79,6 +79,7 @@ class _ChatPageState extends State<ChatPage> {
                           return MessageItem(
                             isMine: isMine,
                             message: messages![index].textMessage,
+                            photoUrl: !isMine ? widget.oppositeUser.photoUrl : null,
                           );
                         },
                         separatorBuilder: (context, index) {
