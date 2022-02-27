@@ -5,7 +5,7 @@ import 'package:chat/model/channel_model.dart';
 import 'package:chat/model/message_model.dart';
 import 'package:chat/model/user_model.dart';
 import 'package:chat/service/firestore_database.dart';
-import 'package:chat/view/chat/widgets/chat_buble.dart';
+import 'package:chat/view/chat/widgets/chat_bubble.dart';
 import 'package:chat/view/chat/widgets/chat_footer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,6 +42,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 35,
         leading: CupertinoButton(
           child: const Icon(
             Icons.arrow_back_ios,
@@ -74,12 +75,20 @@ class _ChatPageState extends State<ChatPage> {
                         reverse: true,
                         itemCount: messages?.length ?? 0,
                         itemBuilder: (context, index) {
-                          bool isMine = _currentUser.id == messages?[index].senderId;
+                          if (messages?.isEmpty ?? true) {
+                            return const SizedBox();
+                          }
+                          var direc = _currentUser.id == messages![index].senderId
+                              ? Direction.right
+                              : Direction.left;
 
-                          return MessageItem(
-                            isMine: isMine,
-                            message: messages![index].textMessage,
-                            photoUrl: !isMine ? widget.oppositeUser.photoUrl : null,
+                          BubbleType type = getType(messages, index);
+
+                          return ChatBubble(
+                            direction: direc,
+                            message: messages[index].textMessage,
+                            photoUrl: direc == Direction.left ? widget.oppositeUser.photoUrl : null,
+                            type: type,
                           );
                         },
                         separatorBuilder: (context, index) {
@@ -101,6 +110,40 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  BubbleType getType(List<Message> messages, int index) {
+    if (index == 0) {
+      if (messages[index].senderId != messages[index + 1].senderId) {
+        return BubbleType.alone;
+      } else {
+        return BubbleType.bottom;
+      }
+    } else if (index == messages.length - 1) {
+      if (messages[index].senderId != messages[index - 1].senderId) {
+        return BubbleType.alone;
+      } else {
+        return BubbleType.top;
+      }
+    } else {
+      if (messages[index].senderId != messages[index - 1].senderId &&
+          messages[index].senderId != messages[index + 1].senderId) {
+        return BubbleType.alone;
+      }
+      if (messages[index].senderId == messages[index + 1].senderId &&
+          messages[index].senderId == messages[index - 1].senderId) {
+        return BubbleType.middle;
+      }
+      if (messages[index].senderId == messages[index + 1].senderId &&
+          messages[index].senderId != messages[index - 1].senderId) {
+        return BubbleType.bottom;
+      }
+      if (messages[index].senderId != messages[index + 1].senderId &&
+          messages[index].senderId == messages[index - 1].senderId) {
+        return BubbleType.top;
+      }
+    }
+    return BubbleType.alone;
+  }
+
   void onSendMessage() {
     if (_messageController.text.trim().isEmpty) {
       return;
@@ -111,7 +154,7 @@ class _ChatPageState extends State<ChatPage> {
         id: channelId(_currentUser.id, widget.oppositeUser.id),
         memberIds: [_currentUser.id, widget.oppositeUser.id],
         members: [_currentUser, widget.oppositeUser],
-        lastMessage: _messageController.text,
+        lastMessage: _messageController.text.trim(),
         sendBy: _currentUser.id,
         lastTime: Timestamp.now(),
         unRead: {
@@ -126,7 +169,7 @@ class _ChatPageState extends State<ChatPage> {
     var docRef = FirebaseFirestore.instance.collection('messages').doc();
     var message = Message(
       id: docRef.id,
-      textMessage: _messageController.text,
+      textMessage: _messageController.text.trim(),
       senderId: _currentUser.id,
       sendAt: Timestamp.now(),
       channelId: _channel!.id,

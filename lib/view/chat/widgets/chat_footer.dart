@@ -16,7 +16,7 @@ class ChatFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: padding ?? const EdgeInsets.only(left: 8, right: 8, bottom: 4, top: 4),
       child: Row(
         children: [
           Expanded(
