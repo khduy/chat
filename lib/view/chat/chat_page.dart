@@ -54,7 +54,23 @@ class _ChatPageState extends State<ChatPage> {
           children: [
             Avatar(photoURL: widget.oppositeUser.photoUrl),
             const SizedBox(width: 8),
-            Text(widget.oppositeUser.displayName),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.oppositeUser.displayName,
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  '@' + widget.oppositeUser.userName,
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
