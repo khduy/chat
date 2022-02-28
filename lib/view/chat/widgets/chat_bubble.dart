@@ -40,7 +40,7 @@ class ChatBubble extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: _borderRadius(direction, type),
-            color: isOnLeft ? Colors.grey[100] : Theme.of(context).primaryColor,
+            color: isOnLeft ? Colors.grey[200] : Theme.of(context).primaryColor,
           ),
           child: Text(
             message,

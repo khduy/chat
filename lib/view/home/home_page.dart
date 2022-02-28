@@ -2,7 +2,7 @@ import 'package:chat/common_widgets/avatar.dart';
 import 'package:chat/model/channel_model.dart';
 import 'package:chat/service/firestore_database.dart';
 import 'package:chat/view/home/widgets/channels_listview.dart';
-import 'package:chat/view/home/widgets/empty_chats.dart';
+import 'package:chat/view/home/widgets/empty_channels.dart';
 import 'package:chat/view/search/search_page.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -123,7 +123,7 @@ class HomePage extends StatelessWidget {
                 ),
               );
             },
-            child: const EmptyChat(),
+            child: const EmptyChannels(),
           )
         ],
       ),

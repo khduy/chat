@@ -1,24 +1,42 @@
 import 'package:chat/common_widgets/avatar.dart';
 import 'package:chat/model/channel_model.dart';
-import 'package:chat/service/firestore_database.dart';
+import 'package:chat/model/user_model.dart';
 import 'package:chat/view/chat/chat_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChannelTile extends StatelessWidget {
-  ChannelTile({Key? key, required this.channel}) : super(key: key);
+  ChannelTile({Key? key, required this.channel}) : super(key: key) {
+    _oppositeUser = channel.members.firstWhere(
+      (user) => user.id != _firebaseAuth.currentUser!.uid,
+    );
+    _currentUser = channel.members.firstWhere(
+      (user) => user.id == _firebaseAuth.currentUser!.uid,
+    );
+    _isUnread = channel.unRead[_currentUser.id]!;
+  }
   final Channel channel;
   final _firebaseAuth = FirebaseAuth.instance;
 
+  late final UserModel _oppositeUser;
+  late final UserModel _currentUser;
+  late final bool _isUnread;
+
+  String _dateFormat(DateTime date) {
+    final dif = DateTime.now().difference(date);
+
+    if (dif < const Duration(days: 1)) {
+      return DateFormat('hh:mm a').format(date);
+    } else if (dif < const Duration(days: 10)) {
+      return DateFormat('EEE d').format(date);
+    } else {
+      return DateFormat('MMM d').format(date);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final oppositeUser = channel.members.firstWhere(
-      (user) => user.id != _firebaseAuth.currentUser!.uid,
-    );
-    final currentUser = channel.members.firstWhere(
-      (user) => user.id == _firebaseAuth.currentUser!.uid,
-    );
-    final isUnread = channel.unRead[currentUser.id]!;
     final theme = Theme.of(context);
     return InkWell(
       onTap: () {
@@ -26,18 +44,11 @@ class ChannelTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => ChatPage(
-              oppositeUser: oppositeUser,
+              oppositeUser: _oppositeUser,
               channel: channel,
             ),
           ),
         );
-        if (isUnread) {
-          channel.unRead[currentUser.id] = false;
-          var data = {
-            'unRead': channel.unRead,
-          };
-          FireStoreDatabase().updateChannel(channel.id, data);
-        }
       },
       child: Row(
         children: [
@@ -45,7 +56,7 @@ class ChannelTile extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Avatar(
               radius: 26,
-              photoURL: oppositeUser.photoUrl,
+              photoURL: _oppositeUser.photoUrl,
             ),
           ),
           Expanded(
@@ -53,9 +64,9 @@ class ChannelTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  oppositeUser.displayName,
+                  _oppositeUser.displayName,
                   style: TextStyle(
-                    fontWeight: isUnread ? FontWeight.bold : FontWeight.w600,
+                    fontWeight: _isUnread ? FontWeight.bold : FontWeight.w500,
                     fontSize: 16,
                   ),
                 ),
@@ -63,8 +74,8 @@ class ChannelTile extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        (channel.sendBy == oppositeUser.id ? '' : 'You: ') + channel.lastMessage,
-                        style: isUnread
+                        (channel.sendBy == _oppositeUser.id ? '' : 'You: ') + channel.lastMessage,
+                        style: _isUnread
                             ? TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: theme.brightness == Brightness.light
@@ -79,8 +90,11 @@ class ChannelTile extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '  ' + String.fromCharCode(0x00B7) + '  ' + 'now',
-                      style: isUnread
+                      '  ' +
+                          String.fromCharCode(0x00B7) +
+                          '  ' +
+                          _dateFormat(channel.lastTime.toDate()),
+                      style: _isUnread
                           ? TextStyle(
                               fontWeight: FontWeight.bold,
                               color: theme.brightness == Brightness.light

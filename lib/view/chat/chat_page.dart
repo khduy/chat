@@ -67,34 +67,46 @@ class _ChatPageState extends State<ChatPage> {
                 child: Consumer(
                   builder: (context, ref, _) {
                     final _channelId = channelId(_currentUser.id, widget.oppositeUser.id);
-                    final messages = ref.watch(messageStreamProvider(_channelId)).value;
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: ListView.separated(
-                        physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                        reverse: true,
-                        itemCount: messages?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          if (messages?.isEmpty ?? true) {
-                            return const SizedBox();
-                          }
-                          var direc = _currentUser.id == messages![index].senderId
-                              ? Direction.right
-                              : Direction.left;
 
-                          BubbleType type = getType(messages, index);
+                    final messageStream = ref.watch(messageStreamProvider(_channelId));
+                    return messageStream.maybeWhen(
+                      data: (messages) {
+                        if (_channel != null && messages.first.senderId == widget.oppositeUser.id) {
+                          _channel!.unRead[_currentUser.id] = false;
+                          var data = {
+                            'unRead': _channel!.unRead,
+                          };
+                          FireStoreDatabase().updateChannel(_channelId, data);
+                        }
+                        return ListView.separated(
+                          padding: EdgeInsets.all(16),
+                          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                          reverse: true,
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            if (messages.isEmpty) {
+                              return const SizedBox();
+                            }
+                            var direc = _currentUser.id == messages[index].senderId
+                                ? Direction.right
+                                : Direction.left;
 
-                          return ChatBubble(
-                            direction: direc,
-                            message: messages[index].textMessage,
-                            photoUrl: direc == Direction.left ? widget.oppositeUser.photoUrl : null,
-                            type: type,
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(height: 3);
-                        },
-                      ),
+                            BubbleType type = getType(messages, index);
+
+                            return ChatBubble(
+                              direction: direc,
+                              message: messages[index].textMessage,
+                              photoUrl:
+                                  direc == Direction.left ? widget.oppositeUser.photoUrl : null,
+                              type: type,
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 3);
+                          },
+                        );
+                      },
+                      orElse: () => SizedBox.shrink(),
                     );
                   },
                 ),
@@ -112,6 +124,7 @@ class _ChatPageState extends State<ChatPage> {
 
   BubbleType getType(List<Message> messages, int index) {
     if (index == 0) {
+      if (messages.length == 1) return BubbleType.alone;
       if (messages[index].senderId != messages[index + 1].senderId) {
         return BubbleType.alone;
       } else {

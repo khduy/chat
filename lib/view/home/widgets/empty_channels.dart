@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class EmptyChat extends StatelessWidget {
-  const EmptyChat({Key? key}) : super(key: key);
+class EmptyChannels extends StatelessWidget {
+  const EmptyChannels({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
