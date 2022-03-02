@@ -1,3 +1,7 @@
+import 'package:chat/constants/app_const.dart';
+import 'package:chat/view/home/home_controller.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
 import 'constants/theme.dart';
 
 import 'view/home/home_page.dart';
@@ -14,6 +18,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  await Hive.initFlutter();
+  await Hive.openBox<int>(AppConst.themeModeBox);
+
   runApp(const ProviderScope(
     child: MyApp(),
   ));
@@ -24,12 +31,13 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final themeController = ref.watch(themeControllerProvider);
     return MaterialApp(
       title: 'Chat App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: themeController.themeMode,
       home: AuthWidget(
         nonSignedInBuilder: (context) => const SignInPage(),
         signedInBuilder: (context) => const HomePage(),

@@ -89,11 +89,9 @@ class ChannelTile extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
-                      '  ' +
-                          String.fromCharCode(0x00B7) +
-                          '  ' +
-                          _dateFormat(channel.lastTime.toDate()),
+                      _dateFormat(channel.lastTime.toDate()),
                       style: _isUnread
                           ? TextStyle(
                               fontWeight: FontWeight.bold,

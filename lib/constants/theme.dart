@@ -2,6 +2,8 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
+  AppTheme._();
+  
   static final ThemeData light = FlexThemeData.light(
     scheme: FlexScheme.brandBlue,
     surfaceMode: FlexSurfaceMode.highSurfaceLowScaffold,

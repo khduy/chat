@@ -1,5 +1,6 @@
 import 'package:chat/model/user_model.dart';
 import 'package:chat/service/firestore_database.dart';
+import 'package:chat/service/local_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,11 +13,27 @@ final signInControllerProvider = ChangeNotifierProvider<SignInController>(
 );
 
 class SignInController with ChangeNotifier {
-  SignInController({required this.firebaseAuth});
+  SignInController({required this.firebaseAuth}) {
+    currentUser = firebaseAuth.currentUser != null
+        ? UserModel.fromFirebaseUser(firebaseAuth.currentUser!)
+        : null;
+
+    firebaseAuth.authStateChanges().listen((user) {
+      if (user != null) {
+        currentUser = UserModel.fromFirebaseUser(user);
+      } else {
+        currentUser = firebaseAuth.currentUser != null
+            ? UserModel.fromFirebaseUser(firebaseAuth.currentUser!)
+            : null;
+      }
+    });
+  }
 
   final FirebaseAuth firebaseAuth;
+
   final _fireStoreDatabase = FireStoreDatabase();
 
+  late UserModel? currentUser;
   bool isLoading = false;
   dynamic error;
 
@@ -62,9 +79,12 @@ class SignInController with ChangeNotifier {
 
   Future<void> onSignIn() async {
     await _signInWithGoogle();
-
     if (!await _isCurrentUserExist()) {
       _saveCurrentUserToDB();
     }
+  }
+
+  Future<void> onSignOut() async {
+    await firebaseAuth.signOut();
   }
 }

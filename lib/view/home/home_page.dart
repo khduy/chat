@@ -1,9 +1,14 @@
 import 'package:chat/common_widgets/avatar.dart';
 import 'package:chat/model/channel_model.dart';
+import 'package:chat/model/user_model.dart';
 import 'package:chat/service/firestore_database.dart';
+import 'package:chat/view/home/home_controller.dart';
 import 'package:chat/view/home/widgets/channels_listview.dart';
 import 'package:chat/view/home/widgets/empty_channels.dart';
+import 'package:chat/view/home/widgets/user_infor_dialog.dart';
 import 'package:chat/view/search/search_page.dart';
+import 'package:chat/view/sign_in/sign_in_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../general_provider.dart';
@@ -30,28 +35,39 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
           child: Consumer(
             builder: (context, ref, child) {
-              final firebaseAuth = ref.watch(firebaseAuthProvider);
-              return Avatar(
-                photoURL: firebaseAuth.currentUser?.photoURL,
-              );
-            },
-          ),
-        ),
-        actions: [
-          Consumer(
-            builder: (context, ref, child) {
-              final firebaseAuth = ref.watch(firebaseAuthProvider);
-              return CupertinoButton(
-                child: Icon(
-                  Icons.logout,
-                  color: theme.colorScheme.onPrimary,
+              final signInController = ref.watch(signInControllerProvider.notifier);
+              final currentUser = signInController.currentUser!;
+              return GestureDetector(
+                child: Avatar(
+                  photoURL: currentUser.photoUrl,
                 ),
-                onPressed: () async {
-                  await firebaseAuth.signOut();
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return InforDialog(
+                        user: currentUser,
+                        onSignOut: signInController.onSignOut,
+                      );
+                    },
+                  );
                 },
               );
             },
           ),
+        ),
+        actions: <Widget>[
+          Consumer(builder: (context, ref, child) {
+            final themeController = ref.watch(themeControllerProvider.notifier);
+            return IconButton(
+              splashRadius: 20,
+              splashColor: Colors.transparent,
+              icon: Icon(
+                themeController.themeMode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
+              ),
+              onPressed: themeController.changeThemeMode,
+            );
+          }),
         ],
       ),
       body: Column(
@@ -130,5 +146,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-

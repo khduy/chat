@@ -67,7 +67,7 @@ class SearchPage extends ConsumerWidget {
                         title: Text(user.displayName),
                         subtitle: Text('@' + user.userName),
                         onTap: () {
-                          onUserTap(context, user);
+                          onTap(context, user);
                         },
                       );
                     },
@@ -81,7 +81,7 @@ class SearchPage extends ConsumerWidget {
     );
   }
 
-  Future<void> onUserTap(BuildContext context, UserModel user) async {
+  Future<void> onTap(BuildContext context, UserModel user) async {
     var currentUser = FirebaseAuth.instance.currentUser!;
     var channelID = channelId(user.id, currentUser.uid);
 

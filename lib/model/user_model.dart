@@ -1,12 +1,17 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hive/hive.dart';
 
-class UserModel {
+class UserModel extends HiveObject {
+
   final String id;
+
   final String displayName;
+
+
   final String userName;
+
+
   final String photoUrl;
 
   UserModel({
