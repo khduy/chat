@@ -1,7 +1,7 @@
-import 'package:chat/common_widgets/avatar.dart';
-import 'package:chat/model/channel_model.dart';
-import 'package:chat/model/user_model.dart';
-import 'package:chat/view/chat/chat_page.dart';
+import '../../../common_widgets/avatar.dart';
+import '../../../model/channel_model.dart';
+import '../../../model/user_model.dart';
+import '../../chat/chat_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

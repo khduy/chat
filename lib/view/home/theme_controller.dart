@@ -1,5 +1,5 @@
-import 'package:chat/general_provider.dart';
-import 'package:chat/service/local_service.dart';
+import '../../general_provider.dart';
+import '../../service/local_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

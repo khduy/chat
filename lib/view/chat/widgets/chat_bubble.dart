@@ -1,4 +1,4 @@
-import 'package:chat/common_widgets/avatar.dart';
+import '../../../common_widgets/avatar.dart';
 import 'package:flutter/material.dart';
 
 enum BubbleType {

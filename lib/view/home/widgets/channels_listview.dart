@@ -1,5 +1,5 @@
-import 'package:chat/model/channel_model.dart';
-import 'package:chat/view/home/widgets/channel_tile.dart';
+import '../../../model/channel_model.dart';
+import 'channel_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:chat/service/local_service.dart';
+import 'service/local_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

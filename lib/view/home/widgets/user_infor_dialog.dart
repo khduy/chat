@@ -1,6 +1,5 @@
-import 'package:chat/common_widgets/avatar.dart';
-import 'package:chat/model/user_model.dart';
-import 'package:flutter/cupertino.dart';
+import '../../../common_widgets/avatar.dart';
+import '../../../model/user_model.dart';
 import 'package:flutter/material.dart';
 
 class InforDialog extends StatelessWidget {
@@ -17,9 +16,9 @@ class InforDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Dialog(
-      // backgroundColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(10),
         child: Container(
           padding: const EdgeInsets.only(top: 16),
           color: theme.primaryColor,

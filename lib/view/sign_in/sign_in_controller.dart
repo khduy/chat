@@ -1,6 +1,5 @@
-import 'package:chat/model/user_model.dart';
-import 'package:chat/service/firestore_database.dart';
-import 'package:chat/service/local_service.dart';
+import '../../model/user_model.dart';
+import '../../service/firestore_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +32,7 @@ class SignInController with ChangeNotifier {
 
   final _fireStoreDatabase = FireStoreDatabase();
 
-  late UserModel? currentUser;
+  UserModel? currentUser;
   bool isLoading = false;
   dynamic error;
 
@@ -69,12 +68,11 @@ class SignInController with ChangeNotifier {
   }
 
   Future<bool> _isCurrentUserExist() async {
-    return await _fireStoreDatabase.isUserExist(firebaseAuth.currentUser!.uid);
+    return await _fireStoreDatabase.isUserExist(currentUser!.id);
   }
 
   Future<void> _saveCurrentUserToDB() async {
-    final user = UserModel.fromFirebaseUser(firebaseAuth.currentUser!);
-    _fireStoreDatabase.setUserToDB(user);
+    _fireStoreDatabase.setUserToDB(currentUser!);
   }
 
   Future<void> onSignIn() async {

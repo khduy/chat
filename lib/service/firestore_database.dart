@@ -1,6 +1,6 @@
-import 'package:chat/model/channel_model.dart';
-import 'package:chat/model/message_model.dart';
-import 'package:chat/model/user_model.dart';
+import '../model/channel_model.dart';
+import '../model/message_model.dart';
+import '../model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 String channelId(String id1, String id2) {

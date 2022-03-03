@@ -1,8 +1,8 @@
-import 'package:chat/common_widgets/avatar.dart';
-import 'package:chat/model/user_model.dart';
-import 'package:chat/service/firestore_database.dart';
-import 'package:chat/view/chat/chat_page.dart';
-import 'package:chat/view/search/widgets/search_bar.dart';
+import '../../common_widgets/avatar.dart';
+import '../../model/user_model.dart';
+import '../../service/firestore_database.dart';
+import '../chat/chat_page.dart';
+import 'widgets/search_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,13 +86,11 @@ class SearchPage extends ConsumerWidget {
     var channelID = channelId(user.id, currentUser.uid);
 
     var channel = await FireStoreDatabase().getChannel(channelID);
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => ChatPage(
-          channel: channel,
-          oppositeUser: user,
-        ),
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => ChatPage(
+        channel: channel,
+        oppositeUser: user,
       ),
-    );
+    ));
   }
 }

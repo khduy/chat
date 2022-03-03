@@ -1,15 +1,12 @@
-import 'package:chat/common_widgets/avatar.dart';
-import 'package:chat/model/channel_model.dart';
-import 'package:chat/model/user_model.dart';
-import 'package:chat/service/firestore_database.dart';
-import 'package:chat/view/home/home_controller.dart';
-import 'package:chat/view/home/widgets/channels_listview.dart';
-import 'package:chat/view/home/widgets/empty_channels.dart';
-import 'package:chat/view/home/widgets/user_infor_dialog.dart';
-import 'package:chat/view/search/search_page.dart';
-import 'package:chat/view/sign_in/sign_in_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import '../../common_widgets/avatar.dart';
+import '../../model/channel_model.dart';
+import '../../service/firestore_database.dart';
+import 'theme_controller.dart';
+import 'widgets/channels_listview.dart';
+import 'widgets/empty_channels.dart';
+import 'widgets/user_infor_dialog.dart';
+import '../search/search_page.dart';
+import '../sign_in/sign_in_controller.dart';
 
 import '../../general_provider.dart';
 

@@ -1,5 +1,5 @@
-import 'package:chat/constants/app_const.dart';
-import 'package:chat/view/home/home_controller.dart';
+import 'constants/app_const.dart';
+import 'view/home/theme_controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'constants/theme.dart';

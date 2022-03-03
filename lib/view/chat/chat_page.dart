@@ -87,6 +87,8 @@ class _ChatPageState extends State<ChatPage> {
                     final messageStream = ref.watch(messageStreamProvider(_channelId));
                     return messageStream.maybeWhen(
                       data: (messages) {
+                        // current user is chatting with opposite user
+                        // so set unread == false if oppositeUser send message
                         if (_channel != null && messages.first.senderId == widget.oppositeUser.id) {
                           _channel!.unRead[_currentUser.id] = false;
                           var data = {
@@ -103,11 +105,11 @@ class _ChatPageState extends State<ChatPage> {
                             if (messages.isEmpty) {
                               return const SizedBox();
                             }
+
                             var direc = _currentUser.id == messages[index].senderId
                                 ? Direction.right
                                 : Direction.left;
-
-                            BubbleType type = getType(messages, index);
+                            var type = getType(messages, index);
 
                             return ChatBubble(
                               direction: direc,
@@ -139,6 +141,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   BubbleType getType(List<Message> messages, int index) {
+    
     if (index == 0) {
       if (messages.length == 1) return BubbleType.alone;
       if (messages[index].senderId != messages[index + 1].senderId) {
@@ -146,34 +149,36 @@ class _ChatPageState extends State<ChatPage> {
       } else {
         return BubbleType.bottom;
       }
-    } else if (index == messages.length - 1) {
+    }
+    if (index == messages.length - 1) {
       if (messages[index].senderId != messages[index - 1].senderId) {
         return BubbleType.alone;
       } else {
         return BubbleType.top;
       }
-    } else {
-      if (messages[index].senderId != messages[index - 1].senderId &&
-          messages[index].senderId != messages[index + 1].senderId) {
-        return BubbleType.alone;
-      }
-      if (messages[index].senderId == messages[index + 1].senderId &&
-          messages[index].senderId == messages[index - 1].senderId) {
-        return BubbleType.middle;
-      }
-      if (messages[index].senderId == messages[index + 1].senderId &&
-          messages[index].senderId != messages[index - 1].senderId) {
-        return BubbleType.bottom;
-      }
-      if (messages[index].senderId != messages[index + 1].senderId &&
-          messages[index].senderId == messages[index - 1].senderId) {
-        return BubbleType.top;
-      }
     }
+
+    if (messages[index].senderId != messages[index - 1].senderId &&
+        messages[index].senderId != messages[index + 1].senderId) {
+      return BubbleType.alone;
+    }
+    if (messages[index].senderId == messages[index + 1].senderId &&
+        messages[index].senderId == messages[index - 1].senderId) {
+      return BubbleType.middle;
+    }
+    if (messages[index].senderId == messages[index + 1].senderId &&
+        messages[index].senderId != messages[index - 1].senderId) {
+      return BubbleType.bottom;
+    }
+    if (messages[index].senderId != messages[index + 1].senderId &&
+        messages[index].senderId == messages[index - 1].senderId) {
+      return BubbleType.top;
+    }
+
     return BubbleType.alone;
   }
 
-  void onSendMessage() {
+  void onSendMessage() async {
     if (_messageController.text.trim().isEmpty) {
       return;
     }
@@ -192,7 +197,7 @@ class _ChatPageState extends State<ChatPage> {
         },
       );
 
-      FireStoreDatabase().updateChannel(_channel!.id, _channel!.toMap());
+      await FireStoreDatabase().updateChannel(_channel!.id, _channel!.toMap());
     }
 
     var docRef = FirebaseFirestore.instance.collection('messages').doc();
