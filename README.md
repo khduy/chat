@@ -1,16 +1,15 @@
-# chat
+# chat app
 
-A new Flutter project.
+Simple chat app using Firebase and Flutter. State management with Riverpod.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+- Sign in with Google
+- Realtime chat
+- Dark & Light mode
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Demo
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://user-images.githubusercontent.com/48742864/156512955-777da99d-a967-4dd3-bf8e-395ac6cffb26.mov
+
