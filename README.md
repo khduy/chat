@@ -7,9 +7,10 @@ Simple chat app using Firebase and Flutter. State management with Riverpod.
 
 - Sign in with Google
 - Realtime chat
-- Dark & Light mode
 
 ## Demo
 
-https://user-images.githubusercontent.com/48742864/156512955-777da99d-a967-4dd3-bf8e-395ac6cffb26.mov
 
+
+
+> https://user-images.githubusercontent.com/48742864/156514573-8bb16b8e-6a85-40ac-b364-87e461fdfc3e.mp4
