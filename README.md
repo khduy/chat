@@ -6,7 +6,7 @@ Simple chat app using Firebase and Flutter. State management with Riverpod.
 ## Features
 
 - Sign in with Google
-- Realtime chat
+- Realtime chat with unseen status
 
 ## Demo
 
